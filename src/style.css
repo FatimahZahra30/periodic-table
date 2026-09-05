@@ -26,19 +26,35 @@ a {
     z-index: 1;
 }
 
+.age {
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    font-size: 7px;
+}
+
+.country {
+    position: absolute;
+    top: 12px;
+    left: 15px;
+    font-size: 7px;
+}
+
 .element img {
-    width: 70px;
-    height: 70px;
+    width: 90px;
+    height: 90px;
     object-fit: cover;
-    border-radius: 50%;
     display: block;
     margin: 5px auto;
+    margin-top: 20px;
 }
 
 .element {
     width: 120px;
     height: 160px;
     box-sizing: border-box;
+    font-family: Helvetica, sans-serif;
+    position: relative;
     overflow: hidden;
     padding: 8px;
 }
@@ -50,9 +66,13 @@ a {
 }
 
 .element .details {
-    font-size: 9px;
+    font-size: 7px;
     line-height: 12px;
     text-align: center;
+}
+
+.name {
+  font-weight: bold;
 }
 
 button {

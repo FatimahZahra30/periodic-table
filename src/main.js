@@ -232,31 +232,36 @@ const table = [
 
             // Background colour based on Net Worth
             if (person.netWorth < 100000) {
-                element.style.backgroundColor = 'rgba(255, 0, 0, 0.7)';
+                element.style.backgroundColor = 'rgba(255, 0, 0, 0.5)';
+                element.style.border = '1px solid rgba(255, 0, 0, 0.8)';
+                element.style.boxShadow = '0px 0px 12px rgba(255, 0, 0, 0.5)';
             } else if (person.netWorth < 200000) {
-                element.style.backgroundColor = 'rgba(255, 165, 0, 0.7)';
+                element.style.backgroundColor = 'rgba(255, 165, 0, 0.5)';
+                element.style.border = '1px solid rgba(255, 165, 0, 0.8)';
+                element.style.boxShadow = '0px 0px 12px rgba(255, 165, 0, 0.5)';
             } else {
-                element.style.backgroundColor = 'rgba(0, 128, 0, 0.7)';
+                element.style.backgroundColor = 'rgba(0, 128, 0, 0.5)';
+                element.style.border = '1px solid rgba(0, 128, 0, 0.8)';
+                element.style.boxShadow = '0px 0px 12px rgba(0, 128, 0, 0.5)';
             }
 
-            const number = document.createElement('div');
-            number.className = 'number';
-            number.textContent = i + 1;
-            element.appendChild(number);
+            const country = document.createElement('div');
+            country.className = 'country';
+            country.textContent = person.country;
+            element.appendChild(country);
 
-            const symbol = document.createElement('div');
-            symbol.className = 'symbol';
-            symbol.textContent = person.name;
-            element.appendChild(symbol);
+            const age = document.createElement('div');
+            age.className = 'age';
+            age.textContent = person.age;
+            element.appendChild(age);
 
             const details = document.createElement('div');
             details.className = 'details';
+
             details.innerHTML =
                 `<img src="${person.photo}" alt="${person.name}">` +
-                `<br>${person.age}` +
-                `<br>${person.country}` +
-                `<br>Interest: ${person.interest}` +
-                `<br>Net Worth: $${person.netWorth.toLocaleString()}`;
+                `<div class="name">${person.name}</div>` +
+                `<div class="interest">${person.interest}</div>`;
 
             element.appendChild(details);
 
