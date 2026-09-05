@@ -9,6 +9,82 @@ import {
     CSS3DObject
 } from 'three/addons/renderers/CSS3DRenderer.js';
 
+// Google Sign-In
+const GOOGLE_CLIENT_ID = '737224434204-oes65iqibb5oqri048i7f9if2cvnv4cb.apps.googleusercontent.com';
+
+const SPREADSHEET_ID = '1LsnaTrS5dy2QevJK0VLxyqUAIqKUb8coGQyUcN79gl8';
+const SHEET_RANGE = 'Data Template!A1:F201';
+
+window.onload = () => {
+
+    google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleCredentialResponse
+    });
+
+    google.accounts.id.renderButton(
+        document.getElementById('google-button'),
+        {
+            theme: 'outline',
+            size: 'large'
+        }
+    );
+
+};
+
+async function handleCredentialResponse(response) {
+    console.log("Google login successful!");
+
+    document.getElementById("login-screen").style.display = "none";
+    document.getElementById("app-screen").style.display = "block";
+
+    try {
+        people = await loadSheetData();
+
+        console.log("People:", people);
+        console.log("Number of people:", people.length);
+
+        init();
+        animate();
+
+    } catch (error) {
+        console.error("Could not load Google Sheet:", error);
+    }
+}
+
+async function loadSheetData() {
+    const url =
+        `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=Data%20Template`;
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        throw new Error(`Failed to load Google Sheet: ${response.status}`);
+    }
+
+    const text = await response.text();
+
+    const json = JSON.parse(
+        text.substring(47, text.length - 2)
+    );
+
+    const people = json.table.rows.map(row => ({
+        name: row.c[0]?.v ?? '',
+        photo: row.c[1]?.v ?? '',
+        age: Number(row.c[2]?.v ?? 0),
+        country: row.c[3]?.v ?? '',
+        interest: row.c[4]?.v ?? '',
+        netWorth: Number(
+            String(row.c[5]?.v ?? '0').replace(/[$,]/g, '')
+        )
+    }));
+
+    console.log("Parsed people:", people);
+    console.log("Number of people:", people.length);
+
+    return people;
+}
+
 const table = [
 				'H', 'Hydrogen', '1.00794', 1, 1,
 				'He', 'Helium', '4.002602', 18, 1,
@@ -133,11 +209,10 @@ const table = [
 			let camera, scene, renderer;
 			let controls;
 
-      const objects = [];
-			const targets = { table: [], sphere: [], helix: [], grid: [] };
+      let people = [];
 
-			init();
-			animate();
+      const objects = [];
+      const targets = { table: [], sphere: [], helix: [], grid: [] };
 
 			function init() {
 
@@ -148,44 +223,60 @@ const table = [
 
 				// table
 
-				for ( let i = 0; i < table.length; i += 5 ) {
+        for (let i = 0; i < people.length; i++) {
 
-					const element = document.createElement( 'div' );
-					element.className = 'element';
-					element.style.backgroundColor = 'rgba(0,127,127,' + ( Math.random() * 0.5 + 0.25 ) + ')';
+            const person = people[i];
 
-					const number = document.createElement( 'div' );
-					number.className = 'number';
-					number.textContent = ( i / 5 ) + 1;
-					element.appendChild( number );
+            const element = document.createElement('div');
+            element.className = 'element';
 
-					const symbol = document.createElement( 'div' );
-					symbol.className = 'symbol';
-					symbol.textContent = table[ i ];
-					element.appendChild( symbol );
+            // Background colour based on Net Worth
+            if (person.netWorth < 100000) {
+                element.style.backgroundColor = 'rgba(255, 0, 0, 0.7)';
+            } else if (person.netWorth < 200000) {
+                element.style.backgroundColor = 'rgba(255, 165, 0, 0.7)';
+            } else {
+                element.style.backgroundColor = 'rgba(0, 128, 0, 0.7)';
+            }
 
-					const details = document.createElement( 'div' );
-					details.className = 'details';
-					details.innerHTML = table[ i + 1 ] + '<br>' + table[ i + 2 ];
-					element.appendChild( details );
+            const number = document.createElement('div');
+            number.className = 'number';
+            number.textContent = i + 1;
+            element.appendChild(number);
 
-					const objectCSS = new CSS3DObject( element );
-					objectCSS.position.x = Math.random() * 4000 - 2000;
-					objectCSS.position.y = Math.random() * 4000 - 2000;
-					objectCSS.position.z = Math.random() * 4000 - 2000;
-					scene.add( objectCSS );
+            const symbol = document.createElement('div');
+            symbol.className = 'symbol';
+            symbol.textContent = person.name;
+            element.appendChild(symbol);
 
-					objects.push( objectCSS );
+            const details = document.createElement('div');
+            details.className = 'details';
+            details.innerHTML =
+                `<img src="${person.photo}" alt="${person.name}">` +
+                `<br>${person.age}` +
+                `<br>${person.country}` +
+                `<br>Interest: ${person.interest}` +
+                `<br>Net Worth: $${person.netWorth.toLocaleString()}`;
 
-					//
+            element.appendChild(details);
 
-					const object = new THREE.Object3D();
-					object.position.x = ( table[ i + 3 ] * 140 ) - 1330;
-					object.position.y = - ( table[ i + 4 ] * 180 ) + 990;
+            const objectCSS = new CSS3DObject(element);
 
-					targets.table.push( object );
+            objectCSS.position.x = Math.random() * 4000 - 2000;
+            objectCSS.position.y = Math.random() * 4000 - 2000;
+            objectCSS.position.z = Math.random() * 4000 - 2000;
 
-				}
+            scene.add(objectCSS);
+            objects.push(objectCSS);
+
+            // 20 x 10 table
+            const object = new THREE.Object3D();
+
+            object.position.x = (i % 20) * 140 - 1330;
+            object.position.y = -(Math.floor(i / 20) * 180) + 810;
+
+            targets.table.push(object);
+        }
 
 				// sphere
 
