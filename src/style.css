@@ -26,48 +26,33 @@ a {
     z-index: 1;
 }
 
+.element img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+    margin: 5px auto;
+}
+
 .element {
     width: 120px;
     height: 160px;
-    box-shadow: 0px 0px 12px rgba(0, 255, 255, 0.5);
-    border: 1px solid rgba(127, 255, 255, 0.25);
-    font-family: Helvetica, sans-serif;
-    text-align: center;
-    line-height: normal;
-    cursor: default;
-}
-
-.element:hover {
-    box-shadow: 0px 0px 12px rgba(0, 255, 255, 0.75);
-    border: 1px solid rgba(127, 255, 255, 0.75);
-}
-
-.element .number {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    font-size: 12px;
-    color: rgba(127, 255, 255, 0.75);
+    box-sizing: border-box;
+    overflow: hidden;
+    padding: 8px;
 }
 
 .element .symbol {
-    position: absolute;
-    top: 40px;
-    left: 0;
-    right: 0;
-    font-size: 60px;
-    font-weight: bold;
-    color: rgba(255, 255, 255, 0.75);
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.95);
+    font-size: 14px;
+    line-height: 16px;
+    text-align: center;
 }
 
 .element .details {
-    position: absolute;
-    bottom: 15px;
-    left: 0;
-    right: 0;
-    font-size: 12px;
-    color: rgba(127, 255, 255, 0.75);
+    font-size: 9px;
+    line-height: 12px;
+    text-align: center;
 }
 
 button {
