@@ -304,25 +304,36 @@ const table = [
 
 				}
 
-				// helix
+				// double helix
 
-				for ( let i = 0, l = objects.length; i < l; i ++ ) {
+				for (let i = 0; i < objects.length; i++) {
 
-					const theta = i * 0.175 + Math.PI;
-					const y = - ( i * 8 ) + 450;
+					const strand = i % 2;
+					const index = Math.floor(i / 2);
+
+					// Fewer turns = more obvious DNA shape
+					const theta = index * 0.18 + (strand * Math.PI);
+
+					// Spread the cards vertically
+					const y = 900 - (index * 22);
 
 					const object = new THREE.Object3D();
 
-					object.position.setFromCylindricalCoords( 900, theta, y );
+					// Distance between the two strands
+					const radius = 850;
 
+					object.position.x = Math.cos(theta) * radius;
+					object.position.y = y;
+					object.position.z = Math.sin(theta) * radius;
+
+					// Face outward
 					vector.x = object.position.x * 2;
 					vector.y = object.position.y;
 					vector.z = object.position.z * 2;
 
-					object.lookAt( vector );
+					object.lookAt(vector);
 
-					targets.helix.push( object );
-
+					targets.helix.push(object);
 				}
 
 				// grid
