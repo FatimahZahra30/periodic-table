@@ -327,15 +327,21 @@ const table = [
 
 				// grid
 
-				for ( let i = 0; i < objects.length; i ++ ) {
+				// 5 x 4 x 10 grid
+
+				for (let i = 0; i < objects.length; i++) {
 
 					const object = new THREE.Object3D();
 
-					object.position.x = ( ( i % 5 ) * 400 ) - 800;
-					object.position.y = ( - ( Math.floor( i / 5 ) % 5 ) * 400 ) + 800;
-					object.position.z = ( Math.floor( i / 25 ) ) * 1000 - 2000;
+					const x = i % 5;
+					const y = Math.floor(i / 5) % 4;
+					const z = Math.floor(i / 20);
 
-					targets.grid.push( object );
+					object.position.x = (x * 300) - 600;
+					object.position.y = -(y * 300) + 450;
+					object.position.z = (z * 500) - 2250;
+
+					targets.grid.push(object);
 
 				}
 
